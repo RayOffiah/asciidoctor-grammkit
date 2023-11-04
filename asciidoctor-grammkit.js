@@ -13,6 +13,41 @@ module.exports = function (registry) {
         self.named('grammkit')
         self.onContext('listing')
 
+        function buildReferenceMap(grammar_rules) {
+
+            let referencesMap = {}
+
+            grammar_rules.rules.forEach(rule => {
+
+                if (rule.expression.elements && rule.expression.elements.length > 0) {
+
+                    rule.expression.elements.forEach(element => {
+
+                        if (element.type === 'rule_ref') {
+
+                            // See if we have an entry in the map for this reference.
+
+                            found_referencee = referencesMap[element.name]
+
+                            if (!found_referencee) {
+
+                                referencesMap[element.name] = new Set()
+                            }
+
+                            // Now just drop in the owner of the record into the
+                            // set.
+
+                            referencesMap[element.name].add(rule.name)
+                        }
+                    })
+                }
+
+            })
+
+
+            return referencesMap
+        }
+
         self.process(function (parent, reader) {
 
             let lines = reader.getLines()
@@ -33,6 +68,9 @@ module.exports = function (registry) {
 
             // Each rule parsed gets a separate diagram, so pick them up and add them
             // to the block, one at a time.
+
+            const reference_map = buildReferenceMap(grammar_rules)
+
             grammar_rules.rules.forEach(rule => {
 
                 let diagram_image = grammkit.diagram(rule)
@@ -58,6 +96,25 @@ module.exports = function (registry) {
                         }
 
                     })
+
+                    diagram_block += `</span>`
+                    diagram_block += `</div>`
+                }
+
+                referencee = reference_map[rule.name]
+
+                if (referencee) {
+
+                    diagram_block += `<div>`
+                    diagram_block += `<span class="grammar-diagram-subtitle">`
+                    diagram_block += `used by: `
+
+                    // Don't ever use a set again!
+
+                    for (let item of referencee) {
+
+                        diagram_block += `<a href="#${item}">${item}</a> `
+                    }
 
                     diagram_block += `</span>`
                     diagram_block += `</div>`
