@@ -1,0 +1,33 @@
+{
+  "name": "asciidoctor-grammkit",
+  "version": "1.0.0",
+  "description": "Generates railroad diagram from EBNF block.",
+  "main": "",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RayOffiah/asciidoctor-grammkit.git"
+  },
+  "keywords": [
+    "asciidoc",
+    "asciidoctor",
+    "ebnf",
+    "grammkit"
+  ],
+  "author": "Ray Offiah",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RayOffiah/asciidoctor-grammkit/issues"
+  },
+  "homepage": "https://github.com/RayOffiah/asciidoctor-grammkit#readme",
+  "dependencies": {
+    "grammkit": "^0.7.2",
+    "@asciidoctor/core": "^2.2.6"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.7",
+    "jest": "^29.7.0"
+  }
+}
