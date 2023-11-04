@@ -132,3 +132,4 @@ dist
 #generatede test files
 
 test.html
+/package-lock.json
