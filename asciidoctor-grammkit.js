@@ -38,14 +38,30 @@ module.exports = function (registry) {
                 let diagram_image = grammkit.diagram(rule)
                 diagram_block += `<div class="grammar-diagram-spacing">`
 
-                diagram_block += `<span class=grammar-diagram-title>`
+                diagram_block += `<span class="grammar-diagram-title">`
                 diagram_block += `<h3 id=${rule.name}>${rule.name}</h3>`
                 diagram_block += `</span>`
 
                 diagram_block += diagram_image
 
-                diagram_block += `<div>`
-                diagram_block += `</div>`
+                if (rule.expression.elements && rule.expression.elements.length > 0) {
+
+                    diagram_block += `<div>`
+                    diagram_block += `<span class="grammar-diagram-subtitle">`
+                    diagram_block += `uses: `
+
+                    rule.expression.elements.forEach(element => {
+
+                        if (element.type === 'rule_ref') {
+
+                            diagram_block += `<a href="#${element.name}">${element.name}</a> `
+                        }
+
+                    })
+
+                    diagram_block += `</span>`
+                    diagram_block += `</div>`
+                }
 
                 diagram_block += `</div>`
             })
