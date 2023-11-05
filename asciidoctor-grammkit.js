@@ -1,11 +1,7 @@
 require('@asciidoctor/core')
-const {diagram} = require('grammkit')
-
 
 module.exports = function (registry) {
 
-    const grammkit = require('grammkit')
-    const parse = require('pegjs/lib/parser').parse
     const transform = require('grammkit/lib/util').transform
 
     registry.block(function () {
