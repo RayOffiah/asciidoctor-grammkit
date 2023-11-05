@@ -31,15 +31,15 @@ module.exports = function (registry) {
             diagram_block += `<link rel='stylesheet' href='./app.css'>`
             diagram_block += `<link rel='stylesheet' href='./diagram.css'>`
 
-            let grammar_rules = transform(grammar, 'ebnf')
+            let grammar_rules = transform(grammar, 'auto')
 
 
             // Each rule parsed gets a separate diagram, so pick them up and add them
             // to the block, one at a time.
 
-            for(let processedGrammar of grammar_rules.procesedGrammars) {
+            for (let processedGrammar of grammar_rules.procesedGrammars) {
 
-                for(let rule of processedGrammar.rules) {
+                for (let rule of processedGrammar.rules) {
 
                     diagram_block += `<div class="grammar-diagram-spacing">`
 
@@ -54,27 +54,38 @@ module.exports = function (registry) {
 
                     if (expression) {
 
-                        diagram_block += `<div>`
+                        if (expression.references && expression.references.length > 0) {
 
-                        diagram_block += `<span class="diagram-small-title">references: </span> `
-                        for (let reference of expression.references) {
+                            diagram_block += `<div>`
 
-                          diagram_block += `<span class="diagram-small-title"><a href="#${reference}">${reference}</a></span> `
+                            diagram_block += `<span class="diagram-small-title">references: </span> `
+                            for (let reference of expression.references) {
+
+                                diagram_block += `<span class="diagram-small-title"><a href="#${reference}">${reference}</a></span> `
+                            }
+
+                            diagram_block += `</div>`
+
                         }
 
-                        diagram_block += `</div>`
                         diagram_block += `<p/>`
-                        diagram_block += `<div>`
 
-                        diagram_block += `<span class="diagram-small-title">Used by: </span> `
-                        for (let usedBy of expression.usedBy) {
+                        if (expression.usedBy && expression.usedBy.length) {
 
-                            diagram_block += `<span class="diagram-small-title"><a href="#${usedBy}">${usedBy}</a></span> `
+                            diagram_block += `<div>`
+
+                            diagram_block += `<span class="diagram-small-title">Used by: </span> `
+                            for (let usedBy of expression.usedBy) {
+
+                                diagram_block += `<span class="diagram-small-title"><a href="#${usedBy}">${usedBy}</a></span> `
+                            }
+
+                            diagram_block += `</div>`
                         }
 
-                        diagram_block += `</div>`
 
                     }
+
 
                     diagram_block += `</div>`
 

@@ -22,7 +22,21 @@ test('Prolog file test', () => {
         extension_registry: registry
 
     })
+
 })
+
+test('Bash file test', () => {
+
+    asciidoctor.convertFile('./sql.adoc', {
+        safe: 'safe',
+        standalone: true,
+        extension_registry: registry
+
+    })
+
+})
+
+
 
 
 

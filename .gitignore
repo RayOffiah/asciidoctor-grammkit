@@ -133,3 +133,6 @@ dist
 
 test.html
 /package-lock.json
+/__tests__/bash.html
+/__tests__/prolog.html
+/__tests__/sql.html
