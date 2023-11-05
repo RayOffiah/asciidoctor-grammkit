@@ -1,11 +1,12 @@
 require('@asciidoctor/core')
-const grammkit = require('grammkit')
+const {diagram} = require('grammkit')
 
 
 module.exports = function (registry) {
 
     const grammkit = require('grammkit')
     const parse = require('pegjs/lib/parser').parse
+    const transform = require('grammkit/lib/util').transform
 
     registry.block(function () {
 
@@ -13,40 +14,6 @@ module.exports = function (registry) {
         self.named('grammkit')
         self.onContext('listing')
 
-        function buildReferenceMap(grammar_rules) {
-
-            let referencesMap = {}
-
-            grammar_rules.rules.forEach(rule => {
-
-                if (rule.expression.elements && rule.expression.elements.length > 0) {
-
-                    rule.expression.elements.forEach(element => {
-
-                        if (element.type === 'rule_ref') {
-
-                            // See if we have an entry in the map for this reference.
-
-                            found_referencee = referencesMap[element.name]
-
-                            if (!found_referencee) {
-
-                                referencesMap[element.name] = new Set()
-                            }
-
-                            // Now just drop in the owner of the record into the
-                            // set.
-
-                            referencesMap[element.name].add(rule.name)
-                        }
-                    })
-                }
-
-            })
-
-
-            return referencesMap
-        }
 
         self.process(function (parent, reader) {
 
@@ -64,65 +31,56 @@ module.exports = function (registry) {
             diagram_block += `<link rel='stylesheet' href='./app.css'>`
             diagram_block += `<link rel='stylesheet' href='./diagram.css'>`
 
-            let grammar_rules = parse(grammar)
+            let grammar_rules = transform(grammar, 'ebnf')
+
 
             // Each rule parsed gets a separate diagram, so pick them up and add them
             // to the block, one at a time.
 
-            const reference_map = buildReferenceMap(grammar_rules)
+            for(let processedGrammar of grammar_rules.procesedGrammars) {
 
-            grammar_rules.rules.forEach(rule => {
+                for(let rule of processedGrammar.rules) {
 
-                let diagram_image = grammkit.diagram(rule)
-                diagram_block += `<div class="grammar-diagram-spacing">`
+                    diagram_block += `<div class="grammar-diagram-spacing">`
 
-                diagram_block += `<span class="grammar-diagram-title">`
-                diagram_block += `<h3 id=${rule.name}>${rule.name}</h3>`
-                diagram_block += `</span>`
+                    diagram_block += `<span class="grammar-diagram-title">`
+                    diagram_block += `<h3 id=${rule.name}>${rule.name}</h3>`
+                    diagram_block += `</span>`
 
-                diagram_block += diagram_image
+                    diagram_block += rule.diagram
 
-                if (rule.expression.elements && rule.expression.elements.length > 0) {
 
-                    diagram_block += `<div>`
-                    diagram_block += `<span class="grammar-diagram-subtitle">`
-                    diagram_block += `uses: `
+                    let expression = processedGrammar.references[rule.name]
 
-                    rule.expression.elements.forEach(element => {
+                    if (expression) {
 
-                        if (element.type === 'rule_ref') {
+                        diagram_block += `<div>`
 
-                            diagram_block += `<a href="#${element.name}">${element.name}</a> `
+                        diagram_block += `<span class="diagram-small-title">references: </span> `
+                        for (let reference of expression.references) {
+
+                          diagram_block += `<span class="diagram-small-title"><a href="#${reference}">${reference}</a></span> `
                         }
 
-                    })
+                        diagram_block += `</div>`
+                        diagram_block += `<p/>`
+                        diagram_block += `<div>`
 
-                    diagram_block += `</span>`
-                    diagram_block += `</div>`
-                }
+                        diagram_block += `<span class="diagram-small-title">Used by: </span> `
+                        for (let usedBy of expression.usedBy) {
 
-                referencee = reference_map[rule.name]
+                            diagram_block += `<span class="diagram-small-title"><a href="#${usedBy}">${usedBy}</a></span> `
+                        }
 
-                if (referencee) {
+                        diagram_block += `</div>`
 
-                    diagram_block += `<div>`
-                    diagram_block += `<span class="grammar-diagram-subtitle">`
-                    diagram_block += `used by: `
-
-                    // Don't ever use a set again!
-
-                    for (let item of referencee) {
-
-                        diagram_block += `<a href="#${item}">${item}</a> `
                     }
 
-                    diagram_block += `</span>`
                     diagram_block += `</div>`
+
                 }
 
-                diagram_block += `</div>`
-            })
-
+            }
 
             return self.createPassBlock(parent, diagram_block)
 

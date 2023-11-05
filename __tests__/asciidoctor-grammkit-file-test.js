@@ -14,6 +14,15 @@ test('Basic file test', () => {
 
 })
 
+test('Prolog file test', () => {
+
+    asciidoctor.convertFile('./prolog.adoc', {
+        safe: 'safe',
+        standalone: true,
+        extension_registry: registry
+
+    })
+})
 
 
 
