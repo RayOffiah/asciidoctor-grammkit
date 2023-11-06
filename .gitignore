@@ -132,5 +132,9 @@ dist
 
 
 /package-lock.json
-/__tests__/*.html
 
+
+/test.html
+/prolog.html
+/sql.html
+/bash.html
