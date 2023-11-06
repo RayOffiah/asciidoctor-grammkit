@@ -28,7 +28,7 @@ module.exports = function (registry) {
                 }
             }
             else {
-                let format = 'auto'
+                format = 'auto'
             }
 
             let lines = reader.getLines()
