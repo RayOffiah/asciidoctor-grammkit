@@ -1,8 +1,8 @@
 {
   "name": "asciidoctor-grammkit",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Generates railroad diagram from EBNF blocks.",
-  "main": "",
+  "main": "asciidoctor-grammkit.js",
   "scripts": {
     "test": "jest"
   },
