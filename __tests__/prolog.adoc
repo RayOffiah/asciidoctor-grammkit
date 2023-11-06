@@ -1,6 +1,6 @@
 = SQL diagram
 
-[grammkit]
+[grammkit, format="ebnf"]
 ----
 /* Taken from http://www.w3.org/TR/rdf-sparql-query/#sparqlGrammar */
 

@@ -11,7 +11,25 @@ module.exports = function (registry) {
         self.onContext('listing')
 
 
-        self.process(function (parent, reader) {
+        self.process(function (parent, reader, attrs) {
+
+            let format = ''
+
+            if (attrs.format) {
+
+                if (attrs.format != 'ebnf' &&
+                    attrs.format != 'pegjs'
+                    && attrs.format != 'ohm') {
+
+                    throw "Invalid format specified"
+                }
+                else {
+                    format = attrs.format
+                }
+            }
+            else {
+                let format = 'auto'
+            }
 
             let lines = reader.getLines()
 
@@ -26,7 +44,7 @@ module.exports = function (registry) {
             let diagram_block = ''
             diagram_block += `<link rel='stylesheet' href='./diagram.css'>`
 
-            let grammar_rules = transform(grammar, 'auto')
+            let grammar_rules = transform(grammar, format)
 
 
             // Each rule parsed gets a separate diagram, so pick them up and add them
