@@ -1,4 +1,4 @@
-= asciidoctor-grammkit
+# asciidoctor-grammkit
 
-== Description
+## Description
 
