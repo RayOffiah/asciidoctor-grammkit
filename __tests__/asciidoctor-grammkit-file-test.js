@@ -25,7 +25,7 @@ test('Prolog file test', () => {
 
 })
 
-test('Bash file test', () => {
+test('SQL file test', () => {
 
     asciidoctor.convertFile('./sql.adoc', {
         safe: 'safe',
@@ -37,6 +37,14 @@ test('Bash file test', () => {
 })
 
 
+test('Bash file test', () => {
 
+    asciidoctor.convertFile('./bash.adoc', {
+        safe: 'safe',
+        standalone: true,
+        extension_registry: registry
 
+    })
+
+})
 

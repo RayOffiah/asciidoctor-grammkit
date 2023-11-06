@@ -24,7 +24,6 @@ module.exports = function (registry) {
             })
 
             let diagram_block = ''
-            diagram_block += `<link rel='stylesheet' href='./app.css'>`
             diagram_block += `<link rel='stylesheet' href='./diagram.css'>`
 
             let grammar_rules = transform(grammar, 'auto')
