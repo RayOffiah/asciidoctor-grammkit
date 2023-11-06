@@ -17,9 +17,9 @@ module.exports = function (registry) {
 
             if (attrs.format) {
 
-                if (attrs.format != 'ebnf' &&
-                    attrs.format != 'pegjs'
-                    && attrs.format != 'ohm') {
+                if (attrs.format !== 'ebnf' &&
+                    attrs.format !== 'pegjs'
+                    && attrs.format !== 'ohm') {
 
                     throw "Invalid format specified"
                 }
