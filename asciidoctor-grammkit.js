@@ -46,7 +46,6 @@ module.exports = function (registry) {
 
             let grammar_rules = transform(grammar, format)
 
-
             // Each rule parsed gets a separate diagram, so pick them up and add them
             // to the block, one at a time.
 
@@ -54,9 +53,9 @@ module.exports = function (registry) {
 
                 for (let rule of processedGrammar.rules) {
 
-                    diagram_block += `<div class="grammar-diagram-spacing">`
+                    diagram_block += `<div class="railroad-diagram-spacing">`
 
-                    diagram_block += `<span class="grammar-diagram-title">`
+                    diagram_block += `<span class="railroad-diagram-title">`
                     diagram_block += `<h3 id=${rule.name}>${rule.name}</h3>`
                     diagram_block += `</span>`
 
@@ -71,10 +70,10 @@ module.exports = function (registry) {
 
                             diagram_block += `<div>`
 
-                            diagram_block += `<span class="diagram-small-title">references: </span> `
+                            diagram_block += `<span class="railroad-diagram-small-title">references: </span> `
                             for (let reference of expression.references) {
 
-                                diagram_block += `<span class="diagram-small-title"><a href="#${reference}">${reference}</a></span> `
+                                diagram_block += `<span class="railroad-diagram-small-title"><a href="#${reference}">${reference}</a></span> `
                             }
 
                             diagram_block += `</div>`
@@ -87,10 +86,10 @@ module.exports = function (registry) {
 
                             diagram_block += `<div>`
 
-                            diagram_block += `<span class="diagram-small-title">Used by: </span> `
+                            diagram_block += `<span class="railroad-diagram-small-title">Used by: </span> `
                             for (let usedBy of expression.usedBy) {
 
-                                diagram_block += `<span class="diagram-small-title"><a href="#${usedBy}">${usedBy}</a></span> `
+                                diagram_block += `<span class="railroad-diagram-small-title"><a href="#${usedBy}">${usedBy}</a></span> `
                             }
 
                             diagram_block += `</div>`

@@ -6,8 +6,9 @@ require('../asciidoctor-grammkit')(registry)
 test('Basic file test', () => {
 
     asciidoctor.convertFile('./test.adoc', {
-        safe: 'safe',
+        safe: 'unsafe',
         standalone: true,
+        to_dir: '../',
         extension_registry: registry
 
     })
@@ -17,8 +18,9 @@ test('Basic file test', () => {
 test('Prolog file test', () => {
 
     asciidoctor.convertFile('./prolog.adoc', {
-        safe: 'safe',
+        safe: 'unsafe',
         standalone: true,
+        to_dir: '../',
         extension_registry: registry
 
     })
@@ -28,8 +30,9 @@ test('Prolog file test', () => {
 test('SQL file test', () => {
 
     asciidoctor.convertFile('./sql.adoc', {
-        safe: 'safe',
+        safe: 'unsafe',
         standalone: true,
+        to_dir: '../',
         extension_registry: registry
 
     })
@@ -40,8 +43,9 @@ test('SQL file test', () => {
 test('Bash file test', () => {
 
     asciidoctor.convertFile('./bash.adoc', {
-        safe: 'safe',
+        safe: 'unsafe',
         standalone: true,
+        to_dir: '../',
         extension_registry: registry
 
     })
