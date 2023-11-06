@@ -1,4 +1,26 @@
 # asciidoctor-grammkit
 
+An Asciidoc extension for converting syntax grammars into RailRoad diagrams.
+
 ## Description
 
+The extension reads a block containing an EBNF grammar, and converts the block into a railroad diagram.
+
+```asciidoc
+
+= Test file
+
+[grammkit]
+----
+start = left ("+" / "-") right
+number = digits
+digits = "1" / "2" / "3"
+left = "("
+right = ")"
+----
+```
+which, after a bit of quiet churning, will produce something like this:
+
+![test-file.png](test-file.png)
+
+Behind the scenes, `asciidoctor-grammkit` uses the most excellent [Grammkit](https://github.com/dundalek/GrammKit) to do all the grunt work, which means the extension can parse `ebnf`, `pegjs`, and `ohm` formats to produce the diagrams.
