@@ -19,9 +19,5 @@ left = "("
 right = ")"
 ----
 ```
-which, after a bit of quiet churning, will produce something like this:
-
-![test-file.png](https://raw.githubusercontent.com/RayOffiah/asciidoctor-grammkit/main/test-file.png?token=GHSAT0AAAAAACE6YTKRAS4TAM6FI7RGAEZCZKJ56HA)
-
 
 Behind the scenes, `asciidoctor-grammkit` uses the most excellent [Grammkit](https://github.com/dundalek/GrammKit) to do all the grunt work, which means the extension can parse `ebnf`, `pegjs`, and `ohm` formats to produce the diagrams.
