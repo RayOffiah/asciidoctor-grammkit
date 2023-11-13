@@ -32,7 +32,18 @@ module.exports = function (registry) {
                 format = 'auto'
             }
 
-            let diagram_block = generate_diagram(reader, format)
+            let references;
+
+            // If there is no reference requested, then assume they
+            // want one. Most folk will probably want the references.
+
+            if (!attrs.references || attrs.references === 'true') {
+                references = true
+            } else {
+                references = false
+            }
+
+            let diagram_block = generate_diagram(reader, format, references)
 
             return self.createPassBlock(parent, diagram_block)
 
@@ -53,7 +64,7 @@ function extract_grammar_lines(lines) {
     return grammar
 }
 
-function generate_diagram(reader, format) {
+function generate_diagram(reader, format, references) {
 
     let lines = reader.getLines()
 
@@ -67,12 +78,12 @@ function generate_diagram(reader, format) {
     // Each rule parsed gets a separate diagram, so pick them up and add them
     // to the block, one at a time.
 
-    diagram_block = process_grammar(grammar_rules, diagram_block)
+    diagram_block = process_grammar(grammar_rules, diagram_block, references)
 
     return diagram_block
 }
 
-function process_grammar(grammar_rules, diagram_block) {
+function process_grammar(grammar_rules, diagram_block, references) {
 
     for (let processedGrammar of grammar_rules.procesedGrammars) {
 
@@ -89,7 +100,7 @@ function process_grammar(grammar_rules, diagram_block) {
 
             let expression = processedGrammar.references[rule.name]
 
-            if (expression) {
+            if (expression && references) {
 
                 if (expression.references && expression.references.length > 0) {
 
@@ -132,7 +143,7 @@ function process_grammar(grammar_rules, diagram_block) {
     return diagram_block
 }
 
-function generate_diagram_from_text(text, format) {
+function generate_diagram_from_text(text, format, references) {
 
 
     let diagram_block = ''
@@ -143,7 +154,7 @@ function generate_diagram_from_text(text, format) {
     // Each rule parsed gets a separate diagram, so pick them up and add them
     // to the block, one at a time.
 
-    diagram_block = process_grammar(grammar_rules, diagram_block)
+    diagram_block = process_grammar(grammar_rules, diagram_block, references)
 
     return diagram_block
 }

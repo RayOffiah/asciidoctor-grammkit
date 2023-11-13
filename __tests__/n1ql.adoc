@@ -1,0 +1,216 @@
+= Test N1QL file
+
+
+[grammkit, format='ebnf']
+----
+/* Data Definition Language */
+
+ddlstatement ::= createstatement
+                | dropstatement
+                | otherstatement
+
+createstatement ::= createscope
+                   | createcollection
+                   | createprimaryindex
+                   | createindex
+                   | createfunction
+
+dropstatement ::= dropscope
+                 | dropcollection
+                 | dropprimaryindex
+                 | dropindex
+                 | dropfunction
+
+otherstatement ::= alterindex
+                  | buildindex
+                  | executefunction
+
+
+/**************************
+ * Scopes and Collections *
+ **************************/
+
+/* tag::createscope[] */
+createscope ::= 'CREATE' 'SCOPE' ( namespace ':' )? bucket '.' scope ( 'IF' 'NOT' 'EXISTS' )?
+/* end::createscope[] */
+
+/* tag::createcollection[] */
+createcollection ::= 'CREATE' 'COLLECTION' ( ( namespace ':' )? bucket '.' scope '.' )?
+                      collection ( 'IF' 'NOT' 'EXISTS' )?
+/* end::createcollection[] */
+
+/* tag::dropscope[] */
+dropscope ::= 'DROP' 'SCOPE' ( namespace ':' )? bucket '.' scope ( 'IF' 'EXISTS' )?
+/* end::dropscope[] */
+
+/* tag::dropcollection[] */
+dropcollection ::= 'DROP' 'COLLECTION' ( ( namespace ':' )? bucket '.' scope '.' )?
+                    collection ( 'IF' 'EXISTS' )?
+/* end::dropcollection[] */
+
+
+/***********
+ * Indexes *
+ ***********/
+
+/* tag::createprimaryindex[] */
+createprimaryindex ::= 'CREATE' 'PRIMARY' 'INDEX' indexname? ( 'IF' 'NOT' 'EXISTS' )?
+                         'ON' keyspaceref indexusing? indexwith?
+/* end::createprimaryindex[] */
+
+/* tag::indexusing[] */
+indexusing ::= 'USING' 'GSI'
+/* end::indexusing[] */
+
+/* tag::indexwith[] */
+indexwith ::= 'WITH' expr
+/* end::indexwith[] */
+
+/* tag::createindex[] */
+createindex ::= 'CREATE' 'INDEX' indexname ( 'IF' 'NOT' 'EXISTS' )? 'ON' keyspaceref
+                 '(' indexkey leadkeyattribs? ( ( ',' indexkey keyattribs? )+ )? ')'
+                 indexpartition? whereclause? indexusing? indexwith?
+/* end::createindex[] */
+
+/* tag::indexkey[] */
+indexkey ::= expr | arrayexpr
+/* end::indexkey[] */
+
+/* tag::leadkeyattribs[] */
+leadkeyattribs ::= indexorder includemissing? | includemissing indexorder?
+/* end::leadkeyattribs[] */
+
+/* tag::keyattribs[] */
+keyattribs ::= indexorder
+/* end::keyattribs[] */
+
+/* tag::includemissing[] */
+includemissing ::= 'INCLUDE' 'MISSING'
+/* end::includemissing[] */
+
+/* tag::indexorder[] */
+indexorder ::= 'ASC' | 'DESC'
+/* end::indexorder[] */
+
+/* tag::arrayexpr[] */
+arrayexpr ::= fullarrayexpr | simplearrayexpr
+/* end::arrayexpr[] */
+
+/* tag::fullarrayexpr[] */
+fullarrayexpr ::= ( 'ALL' | 'DISTINCT' ) 'ARRAY' varexpr
+                    'FOR' var ( 'IN' | 'WITHIN' ) expr
+                    ( ',' var ( 'IN' | 'WITHIN' ) expr )* ( 'WHEN' cond )? 'END'
+/* end::fullarrayexpr[] */
+
+/* tag::simplearrayexpr[] */
+simplearrayexpr ::= ( 'ALL' | 'DISTINCT' ) expr
+/* end::simplearrayexpr[] */
+
+/* tag::pairsfunction[] */
+pairsfunction ::= 'PAIRS' '(' ( 'SELF' | indexkeyobject ) ')'
+/* end::pairsfunction[] */
+
+/* tag::indexkeyobject[] */
+indexkeyobject ::= expr
+/* end::indexkeyobject[] */
+
+/* tag::indexpartition[] */
+indexpartition ::= 'PARTITION' 'BY' 'HASH' '(' partitionkeyexpr
+                    ( ',' partitionkeyexpr )* ')'
+/* end::indexpartition[] */
+
+/* tag::partitionkeyexpr[] */
+partitionkeyexpr ::= expr
+/* end::partitionkeyexpr[] */
+
+/* tag::alterindex[] */
+alterindex ::= 'ALTER' 'INDEX' ( indexpath '.' indexname | indexname 'ON' keyspaceref )
+                indexusing? indexwith
+/* end::alterindex[] */
+
+/* tag::buildindex[] */
+buildindex ::= 'BUILD' 'INDEX' 'ON' keyspaceref '(' indexterm (',' indexterm)* ')'
+                indexusing?
+/* end::buildindex[] */
+
+/* tag::indexterm[] */
+indexterm ::= indexname | indexexpr | subqueryexpr
+/* end::indexterm[] */
+
+/* tag::indexexpr[] */
+indexexpr ::= string | array
+/* end::indexexpr[] */
+
+/* tag::dropprimaryindex[] */
+dropprimaryindex ::= 'DROP' 'PRIMARY' 'INDEX' ( 'IF' 'EXISTS' )? 'ON' keyspaceref
+                       indexusing?
+/* end::dropprimaryindex[] */
+
+/* tag::dropindex[] */
+dropindex ::= 'DROP' 'INDEX' ( indexpath '.' indexname ( 'IF' 'EXISTS' )? |
+                indexname ( 'IF' 'EXISTS' )? 'ON' keyspaceref ) indexusing?
+/* end::dropindex[] */
+
+/* tag::indexpath[] */
+indexpath ::= keyspacefull | keyspaceprefix | keyspacepartial
+/* end::indexpath[] */
+
+/* tag::keyspacefull[] */
+keyspacefull ::= namespace ':' bucket '.' scope '.' collection
+/* end::keyspacefull[] */
+
+/* tag::keyspaceprefix[] */
+keyspaceprefix ::= ( namespace ':' )? bucket
+/* end::keyspaceprefix[] */
+
+
+/*************
+ * Functions *
+ *************/
+
+/* tag::createfunction[] */
+createfunction ::= createfunctioninline | createfunctionexternal
+/* end::createfunction[] */
+
+/* tag::createfunctioninline[] */
+createfunctioninline ::= 'CREATE' ( 'OR' 'REPLACE' )? 'FUNCTION' function '(' params? ')'
+                           ( 'IF' 'NOT' 'EXISTS' )?
+                           ( '{' body '}' | 'LANGUAGE' 'INLINE' 'AS' body )
+/* end::createfunctioninline[] */
+
+/* tag::createfunctionexternal[] */
+createfunctionexternal ::= 'CREATE' ( 'OR' 'REPLACE' )? 'FUNCTION' function '(' params? ')'
+                             ( 'IF' 'NOT' 'EXISTS' )?
+                             'LANGUAGE' 'JAVASCRIPT' 'AS' obj 'AT' library
+/* end::createfunctionexternal[] */
+
+/* tag::function[] */
+function ::= ( namespace ':' ( bucket '.' scope '.' )? )? identifier
+/* end::function[] */
+
+/* tag::params[] */
+params ::= identifier ( "," identifier )* | "..."
+/* end::params[] */
+
+/* tag::body[] */
+body ::= expr
+/* end::body[] */
+
+/* tag::obj[] */
+obj ::= string
+/* end::obj[] */
+
+/* tag::library[] */
+library ::= string
+/* end::library[] */
+
+/* tag::dropfunction[] */
+dropfunction ::= 'DROP' 'FUNCTION' function ( 'IF' 'EXISTS' )?
+/* end::dropfunction[] */
+
+/* tag::executefunction[] */
+executefunction ::= 'EXECUTE' 'FUNCTION' function '(' ( expr ( ',' expr )* )? ')'
+/* end::executefunction[] */
+
+----
+

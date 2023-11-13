@@ -52,3 +52,14 @@ test('Bash file test', () => {
 
 })
 
+test('N1QL file test', () => {
+
+    asciidoctor.convertFile('./n1ql.adoc', {
+        safe: 'unsafe',
+        standalone: true,
+        to_dir: '../',
+        extension_registry: registry
+
+    })
+
+})

@@ -1,6 +1,6 @@
-= SQL diagram
+= Prolog diagram
 
-[grammkit, format="ebnf"]
+[grammkit, format="ebnf", references="true"]
 ----
 /* Taken from http://www.w3.org/TR/rdf-sparql-query/#sparqlGrammar */
 
