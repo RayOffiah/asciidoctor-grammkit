@@ -2,7 +2,7 @@ let {generate_diagram, generate_diagram_from_text} = require('../asciidoctor-gra
 const asciidoctor = require('@asciidoctor/core')()
 const registry = asciidoctor.Extensions.create()
 require('../asciidoctor-grammkit')(registry)
-generate_diagram_from_text = require('../asciidoctor-grammkit').generate_diagram_from_text
+
 
 test('Basic Test 1', () => {
 

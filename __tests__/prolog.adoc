@@ -1,4 +1,4 @@
-= Prolog diagram
+= SQL diagram
 
 [grammkit, format="ebnf", references="true"]
 ----

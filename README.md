@@ -47,11 +47,27 @@ You can also supply a `format` parameter to tag:
 
 [grammkit, format="ebnf"]
 ----
-start = left ("+" / "-") right
-number = digits
-digits = "1" / "2" / "3"
-left = "("
-right = ")"
+Query	  ::=  	Prologue
+                    ( SelectQuery | ConstructQuery | DescribeQuery | AskQuery )
+Prologue	  ::=  	BaseDecl? PrefixDecl*
+BaseDecl	  ::=  	'BASE' IRI_REF
+PrefixDecl	  ::=  	'PREFIX' PNAME_NS IRI_REF
+SelectQuery	  ::=  	'SELECT' ( 'DISTINCT' | 'REDUCED' )? ( Var+ | '*' ) DatasetClause* WhereClause SolutionModifier
+ConstructQuery	  ::=  	'CONSTRUCT' ConstructTemplate DatasetClause* WhereClause SolutionModifier
+DescribeQuery	  ::=  	'DESCRIBE' ( VarOrIRIref+ | '*' ) DatasetClause* WhereClause? SolutionModifier
+AskQuery	  ::=  	'ASK' DatasetClause* WhereClause
+DatasetClause	  ::=  	'FROM' ( DefaultGraphClause | NamedGraphClause )
+DefaultGraphClause	  ::=  	SourceSelector
+NamedGraphClause	  ::=  	'NAMED' SourceSelector
+SourceSelector	  ::=  	IRIref
+WhereClause	  ::=  	'WHERE'? GroupGraphPattern
+SolutionModifier	  ::=  	OrderClause? LimitOffsetClauses?
+LimitOffsetClauses	  ::=  	( LimitClause OffsetClause? | OffsetClause LimitClause? )
+OrderClause	  ::=  	'ORDER' 'BY' OrderCondition+
+OrderCondition	  ::=  	( ( 'ASC' | 'DESC' ) BrackettedExpression )
+                                | ( Constraint | Var )
+LimitClause	  ::=  	'LIMIT' INTEGER
+OffsetClause	  ::=  	'OFFSET' INTEGER
 ----
 ```
 
@@ -120,6 +136,33 @@ svg.railroad-diagram rect {
 
 ```
 
+## Running Standalone
+
+The extension can run standalone by adding it to Asciidoctor's extension registry.
+
+```javascript
+let {generate_diagram, generate_diagram_from_text} = require('../asciidoctor-grammkit')
+const asciidoctor = require('@asciidoctor/core')()
+const registry = asciidoctor.Extensions.create()
+require('../asciidoctor-grammkit')(registry)
+
+
+test('Basic Test 1', () => {
+
+    let input_document = ` 
+[railroad]
+----
+start = left ("+" / "-") right
+number = digits
+----
+`
+
+    let converted_doc = asciidoctor.convert(input_document,{safe: 'safe', standalone: true,
+        extension_registry: registry})
+
+})
+
+```
 
 
 
