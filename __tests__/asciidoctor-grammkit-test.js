@@ -25,6 +25,6 @@ test('Just the diagram', () =>{
 start = left ("+" / "-") right
 number = digits
 `
-    let diagram = generate_diagram_from_text(input_document)
+    let diagram = generate_diagram_from_text(input_document, {})
     console.log(diagram)
 })

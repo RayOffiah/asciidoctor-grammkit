@@ -64,26 +64,38 @@ function extract_grammar_lines(lines) {
     return grammar
 }
 
-function generate_diagram(reader, format, references) {
+function generate_diagram(reader, {format = '', references = true, styles = `./railroad.css`}) {
 
     let lines = reader.getLines()
 
     let grammar = extract_grammar_lines(lines)
-
-    let diagram_block = ''
-    diagram_block += `<link rel='stylesheet' href='./railroad.css'>`
 
     let grammar_rules = transform(grammar, format)
 
     // Each rule parsed gets a separate diagram, so pick them up and add them
     // to the block, one at a time.
 
-    diagram_block = process_grammar(grammar_rules, diagram_block, references)
+    diagram_block = process_grammar(grammar_rules, {references, styles})
 
     return diagram_block
 }
 
-function process_grammar(grammar_rules, diagram_block, references) {
+function generate_diagram_from_text(text, {format = '', references = true, styles = `./railroad.css`}) {
+
+    let grammar_rules = transform(text, format)
+
+    // Each rule parsed gets a separate diagram, so pick them up and add them
+    // to the block, one at a time.
+
+    diagram_block = process_grammar(grammar_rules, { references, styles})
+
+    return diagram_block
+}
+
+function process_grammar(grammar_rules, {references, styles}) {
+
+    let diagram_block = ''
+    diagram_block += `<link rel='stylesheet' href='${styles}'>`
 
     for (let processedGrammar of grammar_rules.procesedGrammars) {
 
@@ -140,22 +152,6 @@ function process_grammar(grammar_rules, diagram_block, references) {
         }
 
     }
-    return diagram_block
-}
-
-function generate_diagram_from_text(text, format, references) {
-
-
-    let diagram_block = ''
-    diagram_block += `<link rel='stylesheet' href='./railroad.css'>`
-
-    let grammar_rules = transform(text, format)
-
-    // Each rule parsed gets a separate diagram, so pick them up and add them
-    // to the block, one at a time.
-
-    diagram_block = process_grammar(grammar_rules, diagram_block, references)
-
     return diagram_block
 }
 
