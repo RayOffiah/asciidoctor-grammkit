@@ -3,14 +3,11 @@ const {transform} = require('grammkit/lib/util')
 
 module.exports = function (registry) {
 
-    const transform = require('grammkit/lib/util').transform
-
     registry.block(function () {
 
         const self = this
         self.named('grammkit')
         self.onContext('listing')
-
 
         self.process(function (parent, reader, attrs) {
 
@@ -37,13 +34,9 @@ module.exports = function (registry) {
             // If there is no reference requested, then assume they
             // want one. Most folk will probably want the references.
 
-            if (!attrs.references || attrs.references === 'true') {
-                references = true
-            } else {
-                references = false
-            }
+            references = !attrs.references || attrs.references === 'true';
 
-            let diagram_block = generate_diagram(reader, format, references)
+            let diagram_block = generate_diagram(reader, {format:format, references:references})
 
             return self.createPassBlock(parent, diagram_block)
 
@@ -75,9 +68,7 @@ function generate_diagram(reader, {format = '', references = true, styles = `./r
     // Each rule parsed gets a separate diagram, so pick them up and add them
     // to the block, one at a time.
 
-    diagram_block = process_grammar(grammar_rules, {references, styles})
-
-    return diagram_block
+    return process_grammar(grammar_rules, {references, styles})
 }
 
 function generate_diagram_from_text(text, {format = '', references = true, styles = `./railroad.css`}) {
@@ -87,9 +78,7 @@ function generate_diagram_from_text(text, {format = '', references = true, style
     // Each rule parsed gets a separate diagram, so pick them up and add them
     // to the block, one at a time.
 
-    diagram_block = process_grammar(grammar_rules, { references, styles})
-
-    return diagram_block
+    return process_grammar(grammar_rules, {references, styles})
 }
 
 function process_grammar(grammar_rules, {references, styles}) {
@@ -118,7 +107,7 @@ function process_grammar(grammar_rules, {references, styles}) {
 
                     diagram_block += `<div>`
 
-                    diagram_block += `<span class="railroad-diagram-small-title">references: </span> `
+                    diagram_block += `<span class="railroad-diagram-small-title">References: </span> `
                     for (let reference of expression.references) {
 
                         diagram_block += `<span class="railroad-diagram-small-title"><a href="#${reference}">${reference}</a></span> `
